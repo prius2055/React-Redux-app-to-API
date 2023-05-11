@@ -1,22 +1,31 @@
-import { Route, Routes } from 'react-router-dom';
-
-import Calculator from './pages/Calculator';
-import Quotes from './pages/Quotes';
-import Home from './pages/Home';
-import NavBar from './components/NavBar';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { getUser } from './store/usersSlice';
 
 import './App.css';
 
 function App() {
+  const { users, isLoading } = useSelector((state) => state.users);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUser());
+  }, []);
+
+  if (isLoading) {
+    <h2>loading...</h2>;
+  }
+
+  if (!users) {
+    <p>No date found</p>;
+  }
+
   return (
-    <div className='App'>
-      <NavBar />
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/calculator' element={<Calculator />} />
-        <Route path='/quotes' element={<Quotes />} />
-      </Routes>
-    </div>
+    <ul className='App'>
+      {users.map((user) => (
+        <li key={user.id}>{user.gender}</li>
+      ))}
+    </ul>
   );
 }
 
